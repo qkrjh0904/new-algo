@@ -1,20 +1,15 @@
 package programmers;
 
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Solution_코딩테스트연습_해시_폰켓몬 {
     public int solution(int[] nums) {
+        Set<Integer> set = Arrays.stream(nums)
+                .boxed()
+                .collect(Collectors.toSet());
 
-        int size = nums.length;
-
-        // 가질 수 있는 최대개수
-        int answer = size / 2;
-
-        HashSet<Integer> set = new HashSet<>();
-        for (int num : nums) {
-            set.add(num);
-        }
-
-        return Math.min(answer, set.size());
+        return Math.min(nums.length / 2, set.size());
     }
 }
