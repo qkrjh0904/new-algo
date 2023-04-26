@@ -7,6 +7,7 @@ public class Solution_코딩테스트연습_완전탐색_피로도 {
 
     private static List<Dungeon> dungeonList = new ArrayList<>();
     private static Integer answer = 0;
+    private static int[] visit = new int[8];
 
     public static class Dungeon {
         public Integer minEnergy;
@@ -25,13 +26,12 @@ public class Solution_코딩테스트연습_완전탐색_피로도 {
             dungeonList.add(Dungeon.of(dungeon[0], dungeon[1]));
         }
 
-        int[] visit = new int[dungeonList.size()];
-        go(visit, new ArrayList<>(), dungeonList.size(), k);
+        go(new ArrayList<>(), dungeonList.size(), k);
 
         return answer;
     }
 
-    private static void go(int[] visit, List<Integer> now, int limit, int k) {
+    private static void go(List<Integer> now, int limit, int k) {
         if (now.size() == limit) {
             check(now, k);
             return;
@@ -41,7 +41,7 @@ public class Solution_코딩테스트연습_완전탐색_피로도 {
             if (visit[i] == 0) {
                 visit[i] = 1;
                 now.add(i);
-                go(visit, now, limit, k);
+                go(now, limit, k);
                 now.remove(now.size() - 1);
                 visit[i] = 0;
             }
