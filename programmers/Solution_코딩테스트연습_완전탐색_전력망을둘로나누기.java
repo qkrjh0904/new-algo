@@ -1,7 +1,8 @@
 package programmers;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Solution_코딩테스트연습_완전탐색_전력망을둘로나누기 {
 
@@ -11,64 +12,65 @@ public class Solution_코딩테스트연습_완전탐색_전력망을둘로나�
         answer = Integer.MAX_VALUE;
 
         for (int i = 0; i < wires.length; ++i) {
-            go(i, wires, n);
+            go2(i, wires, n);
         }
 
+        System.out.println(answer);
         return answer;
     }
 
-    private static void go(int index, int[][] wires, int n) {
+    private static void go2(int index, int[][] wires, int n) {
 
-        int[] visit = new int[n];
-        Arrays.fill(visit, 0);
-
+        int[] parent = getParentArray(n);
         for (int i = 0; i < wires.length; ++i) {
             if (index == i) {
                 continue;
             }
 
-            int node1 = wires[i][0] - 1;
-            int node2 = wires[i][1] - 1;
+            int n1 = wires[i][0] - 1;
+            int n2 = wires[i][1] - 1;
 
-            // 둘 다 방문한 경우
-            if (visit[node1] != 0 && visit[node2] != 0) {
-                continue;
-            }
-
-            // 둘 다 방문 안한경우
-            if (visit[node1] == visit[node2] && visit[node1] == 0) {
-                int fillWith = Arrays.stream(visit).boxed().collect(Collectors.toList()).contains(1) ? 2 : 1;
-                visit[node1] = fillWith;
-                visit[node2] = fillWith;
-                continue;
-            }
-
-            if (visit[node1] == 0) {
-                visit[node1] = visit[node2];
-                continue;
-            }
-
-            if (visit[node2] == 0) {
-                visit[node2] = visit[node1];
-            }
+            union(parent, n1, n2);
         }
 
-        calculate(visit);
+        count(parent, n);
     }
 
-    private static void calculate(int[] visit) {
-        int count0 = 0;
-        int count1 = 0;
-        int count2 = 0;
-        for (int num : visit) {
-            if (num == 0) count0++;
-            if (num == 1) count1++;
-            if (num == 2) count2++;
+    private static void count(int[] parent, int n) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < n; ++i) {
+            int num = parent[i];
+            map.put(num, map.getOrDefault(num, 0) + 1);
         }
 
-        int tmp = Math.max(count0, count1) - Math.min(count0, count1);
-        int result = Math.abs(tmp - count2);
-        answer = Math.min(answer, result);
+        ArrayList<Integer> list = new ArrayList<>(map.values());
+        System.out.println(list);
+        answer = Math.min(answer, Math.abs(list.get(0) - list.get(1)));
+    }
+
+    private static void union(int[] parent, int n1, int n2) {
+        n1 = getParent(parent, n1);
+        n2 = getParent(parent, n2);
+        if (n1 > n2) {
+            parent[n1] = n2;
+            return;
+        }
+        parent[n2] = n1;
+    }
+
+    private static int getParent(int[] parent, int n1) {
+        if (parent[n1] == n1) {
+            return n1;
+        }
+        return parent[n1] = getParent(parent, parent[n1]);
+    }
+
+    private static int[] getParentArray(int n) {
+        int[] parent = new int[n];
+        for (int i = 0; i < n; ++i) {
+            parent[i] = i;
+        }
+        return parent;
     }
 
     public static void main(String[] args) {
@@ -78,6 +80,8 @@ public class Solution_코딩테스트연습_완전탐색_전력망을둘로나�
 //        int[][] wires = {{1,2},{2,3},{3,4}};
         int n = 7;
         int[][] wires = {{1, 2}, {2, 7}, {3, 7}, {3, 4}, {4, 5}, {6, 7}};
+//        int n = 2;
+//        int[][] wires = {{1, 2}};
         solution(n, wires);
     }
 
