@@ -63,6 +63,7 @@ public class Solution_코딩테스트연습_완전탐색_전력망을둘로나�
             return n1;
         }
         return parent[n1] = getParent(parent, parent[n1]);
+
     }
 
     private static int[] getParentArray(int n) {
